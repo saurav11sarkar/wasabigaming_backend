@@ -179,7 +179,7 @@ const updateMyProfile = async (
   file?: Express.Multer.File,
 ) => {
   const user = await User.findById(id);
-  console.log('upadte user by id', payload);
+  // console.log('upadte user by id', payload);
   if (!user) {
     throw new AppError(404, 'User not found');
   }
@@ -191,7 +191,7 @@ const updateMyProfile = async (
     payload.profileImage = uploadProfile.url;
   }
   const result = await User.findByIdAndUpdate(id, payload, { new: true });
-  console.log(result);
+  // console.log(result);
   if (!result) {
     throw new AppError(404, 'User not found');
   }
