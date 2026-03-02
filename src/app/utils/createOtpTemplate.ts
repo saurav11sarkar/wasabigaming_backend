@@ -40,22 +40,17 @@ import config from '../config';
 // `;
 const createOtpTemplate = (
   code: string,
-  email?: string,
+  name?: string,
   companyName: string = 'Aspiring Legal Network',
 ): string => `
   <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 16px; background-color: #f0f0eb;">
     <div style="background: #ffffff; border-radius: 20px; overflow: hidden; border: 2px solid #111111; box-shadow: 6px 6px 0px #111111;">
 
       <!-- Header -->
-      <div style="background: #FFE500; padding: 40px 48px 36px; text-align: center; border-bottom: 2px solid #111111; position: relative;">
+      <div style="background: #FFE500; padding: 40px 48px 36px; text-align: center; border-bottom: 2px solid #111111;">
 
         <!-- Logo Badge -->
-        <div style="display: inline-flex; align-items: center; justify-content: center; background: #111111; border-radius: 12px; padding: 10px 18px; margin-bottom: 24px;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-right: 8px;">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#FFE500" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="#FFE500" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="#FFE500" stroke-width="2" stroke-linejoin="round"/>
-          </svg>
+        <div style="display: inline-block; background: #111111; border-radius: 12px; padding: 10px 18px; margin-bottom: 24px;">
           <span style="color: #FFE500; font-size: 13px; font-weight: 700; letter-spacing: 0.5px;">ALN</span>
         </div>
 
@@ -66,29 +61,27 @@ const createOtpTemplate = (
       <!-- Body -->
       <main style="padding: 40px 48px; text-align: center;">
         <p style="font-size: 15px; color: #444444; margin: 0 0 6px; font-weight: 400;">
-          Hi <strong style="color: #111111;">${email || 'there'}</strong> 👋
+          Hi <strong style="color: #111111;">${name || 'there'}</strong> &#128075;
         </p>
         <p style="font-size: 14px; color: #888888; line-height: 1.7; margin: 0 0 36px; max-width: 340px; margin-left: auto; margin-right: auto;">
           Use the one-time code below to complete your verification. Don't share this with anyone.
         </p>
 
         <!-- OTP Box -->
-        <div style="display: inline-block; background: #FFE500; border: 2px solid #111111; border-radius: 16px; padding: 24px 52px; margin-bottom: 12px; box-shadow: 4px 4px 0px #111111; position: relative;">
-          <!-- Corner Dots -->
-          <div style="position: absolute; width: 6px; height: 6px; background: #111111; border-radius: 50%; top: 8px; left: 10px;"></div>
-          <div style="position: absolute; width: 6px; height: 6px; background: #111111; border-radius: 50%; top: 8px; right: 10px;"></div>
-          <div style="position: absolute; width: 6px; height: 6px; background: #111111; border-radius: 50%; bottom: 8px; left: 10px;"></div>
-          <div style="position: absolute; width: 6px; height: 6px; background: #111111; border-radius: 50%; bottom: 8px; right: 10px;"></div>
-
-          <div style="font-size: 46px; font-weight: 900; color: #111111; letter-spacing: 12px; text-indent: 12px; line-height: 1; font-variant-numeric: tabular-nums;">
-            ${code}
-          </div>
-        </div>
+        <table cellpadding="0" cellspacing="0" style="margin: 0 auto 12px auto;">
+          <tr>
+            <td style="background: #FFE500; border: 2px solid #111111; border-radius: 16px; padding: 24px 52px; box-shadow: 4px 4px 0px #111111; text-align: center;">
+              <span style="font-size: 46px; font-weight: 900; color: #111111; letter-spacing: 12px; line-height: 1; font-variant-numeric: tabular-nums; display: block;">
+                ${code}
+              </span>
+            </td>
+          </tr>
+        </table>
 
         <!-- Timer Badge -->
-        <div style="margin-top: 16px;">
-          <span style="display: inline-block; background: #111111; color: #FFE500; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 6px 16px; border-radius: 100px;">
-            ⏱ Expires in 5 minutes
+        <div style="margin-top: 16px; text-align: center;">
+          <span style="display: inline-block; background: #111111; color: #FFE500; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 6px 16px; border-radius: 100px; line-height: 1.5;">
+            &#9201; EXPIRES IN 5 MINUTES
           </span>
         </div>
 
@@ -96,14 +89,20 @@ const createOtpTemplate = (
         <div style="height: 1px; background: #eeeeee; margin: 32px 0;"></div>
 
         <!-- Warning Note -->
-        <div style="background: #fafafa; border: 1.5px solid #eeeeee; border-radius: 12px; padding: 16px 20px; text-align: left;">
-          <div style="display: flex; align-items: flex-start; gap: 12px;">
-            <div style="flex-shrink: 0; width: 32px; height: 32px; background: #FFE500; border-radius: 8px; border: 1.5px solid #111111; display: flex; align-items: center; justify-content: center; font-size: 14px;">🔒</div>
-            <p style="font-size: 13px; color: #999999; margin: 0; line-height: 1.6; padding-top: 4px;">
-              If you didn't request this verification, you can safely ignore this email. Your account remains secure.
-            </p>
-          </div>
-        </div>
+        <table cellpadding="0" cellspacing="0" style="width: 100%; background: #fafafa; border: 1.5px solid #eeeeee; border-radius: 12px;">
+          <tr>
+            <td style="padding: 16px 20px; vertical-align: top; width: 44px;">
+              <div style="width: 32px; height: 32px; background: #FFE500; border-radius: 8px; border: 1.5px solid #111111; text-align: center; line-height: 32px; font-size: 14px;">
+                &#128274;
+              </div>
+            </td>
+            <td style="padding: 16px 20px 16px 0; vertical-align: middle;">
+              <p style="font-size: 13px; color: #999999; margin: 0; line-height: 1.6;">
+                If you didn't request this verification, you can safely ignore this email. Your account remains secure.
+              </p>
+            </td>
+          </tr>
+        </table>
       </main>
 
       <!-- Footer -->
@@ -112,18 +111,17 @@ const createOtpTemplate = (
           &copy; ${new Date().getFullYear()} <span style="color: #FFE500; font-weight: 600;">${companyName}</span>. All rights reserved.
         </p>
         <p style="font-size: 11px; color: #ffffff; margin: 5px 0 0;">
-          This is an automated message — please do not reply.
+          This is an automated message &mdash; please do not reply.
         </p>
       </footer>
 
     </div>
 
     <p style="text-align: center; font-size: 11px; color: #bbbbbb; margin: 16px 0 0; letter-spacing: 0.8px; text-transform: uppercase;">
-      Secure · Trusted · Professional
+      Secure &middot; Trusted &middot; Professional
     </p>
   </div>
 `;
-
 export const sendInvitation = (
   studentName: string,
   schoolName: string,

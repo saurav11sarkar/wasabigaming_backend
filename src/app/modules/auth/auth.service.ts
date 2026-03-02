@@ -32,7 +32,7 @@ const registerUser = async (payload: Partial<IUser>) => {
     await sendMailer(
       user.email,
       user.firstName + ' ' + user.lastName,
-      createOtpTemplate(otp, user.email, 'Aspiring Legal Network'),
+      createOtpTemplate(otp, user.firstName, 'Aspiring Legal Network'),
     );
     return { message: 'OTP resent successfully', user };
   }
