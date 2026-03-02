@@ -69,7 +69,7 @@ const getAllUser = async (params: any, options: IOption) => {
     'schoolType',
     'schoolStatus',
     'aboutSchool',
-    'grade'
+    'grade',
   ];
 
   if (searchTerm) {
@@ -88,16 +88,18 @@ const getAllUser = async (params: any, options: IOption) => {
   //   });
   // }
   const cleanedFilter = Object.fromEntries(
-  Object.entries(filterData).filter(([_, value]) => value !== '' && value !== null && value !== undefined)
-);
+    Object.entries(filterData).filter(
+      ([_, value]) => value !== '' && value !== null && value !== undefined,
+    ),
+  );
 
-if (Object.keys(cleanedFilter).length) {
-  andCondition.push({
-    $and: Object.entries(cleanedFilter).map(([field, value]) => ({
-      [field]: value,
-    })),
-  });
-}
+  if (Object.keys(cleanedFilter).length) {
+    andCondition.push({
+      $and: Object.entries(cleanedFilter).map(([field, value]) => ({
+        [field]: value,
+      })),
+    });
+  }
 
   // YEAR Filter → createdAt
   if (year) {
@@ -151,6 +153,7 @@ const updateUserById = async (
   file?: Express.Multer.File,
 ) => {
   const user = await User.findById(id);
+  // console.log('upadte user by id', payload);
   if (!user) {
     throw new AppError(404, 'User not found');
   }
@@ -162,6 +165,33 @@ const updateUserById = async (
     payload.profileImage = uploadProfile.url;
   }
   const result = await User.findByIdAndUpdate(id, payload, { new: true });
+  // console.log(result);
+  if (!result) {
+    throw new AppError(404, 'User not found');
+  }
+  return result;
+};
+
+
+const updateMyProfile = async (
+  id: string,
+  payload: IUser,
+  file?: Express.Multer.File,
+) => {
+  const user = await User.findById(id);
+  console.log('upadte user by id', payload);
+  if (!user) {
+    throw new AppError(404, 'User not found');
+  }
+  if (file) {
+    const uploadProfile = await fileUploader.uploadToCloudinary(file);
+    if (!uploadProfile?.url) {
+      throw new AppError(400, 'Failed to upload profile image');
+    }
+    payload.profileImage = uploadProfile.url;
+  }
+  const result = await User.findByIdAndUpdate(id, payload, { new: true });
+  console.log(result);
   if (!result) {
     throw new AppError(404, 'User not found');
   }
@@ -276,4 +306,5 @@ export const userService = {
   schoolOverview,
   getJobsMatchingUserSkills,
   getLoginHistoryFromDB,
+  updateMyProfile
 };

@@ -19,7 +19,7 @@ router.put(
   '/profile',
   auth(userRole.admin, userRole.school, userRole.student),
   fileUploader.upload.single('profileImage'),
-  userController.updateUserById,
+  userController.updateMyProfile,
 );
 router.get('/overview', auth(userRole.admin), userController.schoolOverview);
 router.get('/match-job', auth(userRole.admin, userRole.student), userController.getJobsMatchingUserSkillsController);
