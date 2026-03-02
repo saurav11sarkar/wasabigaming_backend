@@ -388,10 +388,11 @@ export const updatedCoverLetter = async (
 
 export const mockInterviewQuestionGenerate = async (
   category: any,
+  year_group: string,
   questionNumber?: Number,
 ): Promise<string | null> => {
   try {
-    const payload: any = { segment: category };
+    const payload: any = { segment: category, year_group };
     if (questionNumber !== undefined) {
       payload.n_question = questionNumber;
     }

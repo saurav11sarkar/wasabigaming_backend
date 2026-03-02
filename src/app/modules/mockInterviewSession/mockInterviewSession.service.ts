@@ -45,12 +45,21 @@ const createMockInterviewSession = async (
   //     'Free plan allows only 1 mock interview attempt.'
   //   );
   // }
+  const student = await User.findById(userId);
+  if (!student) {
+    throw new AppError(404, 'Student not found');
+  }
+  const year_group = student.grade;
+  if (!year_group) {
+    throw new AppError(400, 'Student grade not found');
+  }
 
   const attemptNumber = attemptCount + 1;
 
   const aiApiCall = await mockInterviewQuestionGenerate(
     payload.category,
-    Number(payload.questionNumber)
+    year_group,
+    Number(payload.questionNumber),
   );
 
   const questionsArray = Array.isArray(aiApiCall)
