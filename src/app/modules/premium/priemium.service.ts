@@ -136,7 +136,7 @@ const paySubscription = async (userId: string, subscriptionId: string) => {
     line_items: [
       {
         price_data: {
-          currency: 'eur',
+          currency: 'gbp',
           unit_amount: premium.price * 100,
           product_data: {
             name: premium.name,
@@ -163,7 +163,7 @@ const paySubscription = async (userId: string, subscriptionId: string) => {
     subscription: premium._id,
     stripeSessionId: session.id,
     amount: premium.price,
-    currency: 'eur',
+    currency: 'gbp',
     status: 'pending',
   });
 
