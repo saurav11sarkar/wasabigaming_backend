@@ -15,7 +15,7 @@ const createCareanalysis = async (userId: string, aiassigmentId: string) => {
   if (!aiassessment) throw new AppError(404, 'ai assessment not found');
 
   const aiResponse = await aicareanalysisquestion();
-  //   console.log(aiResponse);
+  // console.log('create', aiResponse);
   if (!aiResponse) throw new AppError(400, 'failed to get response from ai');
 
   const result = await Careanalysis.create({
@@ -52,8 +52,10 @@ const updateCareanalysis = async (
 ) => {
   const existingData = await Careanalysis.findById(id);
   if (!existingData) throw new AppError(404, 'Data not found');
+  payload.precedentSummary = existingData.precedentSummary || '';
+  payload.pretendCase = existingData.pretendCase || '';
   const aiResponse = await aiareanalysisSubmission(payload.yourResponse!);
-  // console.log(aiResponse);
+  // console.log('aiResponse', aiResponse);
   const result = await Careanalysis.findByIdAndUpdate(
     id,
     {
@@ -61,6 +63,10 @@ const updateCareanalysis = async (
       legalIssue: aiResponse.legalIssue,
       caseLinking: aiResponse.caseLinking,
       summaryQuality: aiResponse.summaryQuality,
+      wordCount: aiResponse.wordCount,
+      completionRate: aiResponse.completionRate,
+      contentScore: aiResponse.contentScore,
+      grade: aiResponse.grade,
     },
     {
       new: true,

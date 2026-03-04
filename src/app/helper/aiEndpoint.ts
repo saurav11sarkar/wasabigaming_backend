@@ -225,6 +225,9 @@ export const aicareanalysisquestion = async () => {
 };
 export const aiareanalysisSubmission = async (analysis: string) => {
   const formData = new URLSearchParams();
+
+  formData.append('precedent_summary', analysis);
+  formData.append('pretend_case', analysis);
   formData.append('your_summary', analysis);
 
   try {

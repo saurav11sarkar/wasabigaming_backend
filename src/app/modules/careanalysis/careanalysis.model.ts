@@ -28,12 +28,30 @@ const careanalysisSchema = new Schema<ICareanalysis>(
       trim: true,
     },
     summaryQuality: {
-      type: String,
+      type: [String],
       trim: true,
     },
     applicant: {
       type: Types.ObjectId,
       ref: 'User',
+    },
+    wordCount: {
+      type: Number,
+      min: 0,
+    },
+    completionRate: {
+      type: Number,
+      min: 0,
+      max: 100,
+    },
+    contentScore: {
+      type: Number,
+      min: 0,
+      max: 100,
+    },
+    grade: {
+      type: String,
+      trim: true,
     },
   },
   {

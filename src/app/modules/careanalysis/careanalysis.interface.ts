@@ -5,8 +5,12 @@ export interface ICareanalysis {
   precedentSummary?: string;
   pretendCase?: string;
   yourResponse?: string;
+  wordCount?: number;
+  completionRate?: number;
+  contentScore?: number;
+  grade?: string;
   legalIssue?: string;
   caseLinking?: string;
-  summaryQuality?: string;
+  summaryQuality?: string[];
   applicant?: Types.ObjectId;
 }
