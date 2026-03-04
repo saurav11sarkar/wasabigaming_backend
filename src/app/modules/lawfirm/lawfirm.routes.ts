@@ -21,7 +21,7 @@ router.get('/', lawfirmController.getAllLawfirm);
 router.get(
   '/law-firm-based-job',
   auth(userRole.admin, userRole.student),
-  checkStudentSubscription,
+  // checkStudentSubscription,
   lawfirmController.getJobLawFirmBased,
 );
 
