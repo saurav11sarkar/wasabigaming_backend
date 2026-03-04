@@ -46,6 +46,23 @@ const intrayemailSchema = new mongoose.Schema<IIntrayemail>(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
+    wordCount: {
+      type: Number,
+      min: 0,
+    },
+    completionRate: {
+      type: Number,
+      min: 0,
+      max: 100,
+    },
+    overallGrade: {
+      type: String,
+      trim: true,
+    },
+    typeSpeed: {
+      type: Number,
+      min: 0,
+    },
   },
   {
     timestamps: true,

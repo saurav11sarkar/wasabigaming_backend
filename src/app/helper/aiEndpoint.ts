@@ -173,7 +173,9 @@ export const aiintrayemailquestion = async () => {
 
 export const aiintrayemailSubmission = async (caseStudy: string) => {
   const formData = new URLSearchParams();
-  formData.append('reply_raft', caseStudy);
+  formData.append('draftEmail', caseStudy);
+  formData.append('instructions', caseStudy);
+  formData.append('answer_email', caseStudy);
 
   try {
     const response = await axios.post(

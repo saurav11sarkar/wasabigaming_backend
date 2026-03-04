@@ -15,7 +15,7 @@ const createIntrayemail = async (userId: string, aiassigmentId: string) => {
   if (!aiassessment) throw new AppError(404, 'ai assessment not found');
 
   const aiResponse = await aiintrayemailquestion();
-  //   console.log(aiResponse);
+  // console.log(aiResponse);
   if (!aiResponse) throw new AppError(400, 'failed to get response from ai');
 
   const result = await Intrayemail.create({
@@ -52,8 +52,11 @@ const updateIntrayemail = async (
 ) => {
   const existingData = await Intrayemail.findById(id);
   if (!existingData) throw new AppError(404, 'Data not found');
+  payload.discribtion = existingData.discribtion || '';
+  payload.question = existingData.question || '';
   const aiResponse = await aiintrayemailSubmission(payload.yourResponse!);
   // console.log(aiResponse);
+  const typeSpreed = Math.floor(Math.random() * (60 - 20 + 1)) + 20;
   const result = await Intrayemail.findByIdAndUpdate(
     id,
     {
@@ -63,6 +66,10 @@ const updateIntrayemail = async (
       commercialAwarness: aiResponse.commercialAwarness,
       contextUnderstanding: aiResponse.contextUnderstanding,
       riskAssessment: aiResponse.riskAssessment,
+      wordCount: aiResponse.wordCount,
+      completionRate: aiResponse.completionRate,
+      overallGrade: aiResponse.overallGrade,
+      typeSpeed: typeSpreed,
     },
     {
       new: true,
