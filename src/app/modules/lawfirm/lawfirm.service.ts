@@ -102,13 +102,16 @@ const getSingleLawfirm = async (userId: string, id: string) => {
   const user = await User.findById(userId);
   if (!user) throw new AppError(404, 'user is not found');
 
-  if (user.role !== 'admin') {
-    const subscribe = await Premium.findById(user.subscription);
-    if (subscribe?.name !== 'premium') {
-      throw new AppError(403, 'Subscription plan error');
-    }
-  }
+  // if (user.role !== 'admin') {
+  //   const subscribe = await Premium.findById(user.subscription);
+  //   if (subscribe?.name !== 'premium') {
+  //     throw new AppError(403, 'Subscription plan error');
+  //   }
+  // }
   const result = await LawFirm.findById(id);
+  if (!result) {
+    throw new AppError(404, 'Lawfirm not found');
+  }
   return result;
 };
 
