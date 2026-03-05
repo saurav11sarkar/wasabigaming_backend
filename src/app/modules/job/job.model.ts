@@ -20,7 +20,7 @@ const jobSchema = new Schema<IJob>(
     requiredSkills: { type: [String], default: [] },
     createBy: { type: Types.ObjectId, ref: 'User' },
     url: { type: String },
-    companyId: { type: Types.ObjectId, ref: 'Company' },
+    companyId: { type: Types.ObjectId, ref: 'Lawfirm' },
     applicants: [{ type: Types.ObjectId, ref: 'User' }],
     // applicationJob: {
     //   type: String,

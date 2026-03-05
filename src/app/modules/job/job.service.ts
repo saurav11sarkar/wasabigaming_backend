@@ -131,6 +131,74 @@ const createManualJob = async (userId: string, payload: IJob) => {
 //   return filteredResult;
 // };
 
+// const createJob = async (userId: string, job_title: string) => {
+//   const user = await User.findById(userId);
+//   if (!user) throw new AppError(404, 'User is not found');
+
+//   const dataResponse: ILawFirmJob[] = await aiIntregation.lawFirmAi(job_title);
+
+//   const results = await Promise.all(
+//     dataResponse.map(async (data) => {
+//       try {
+//         const lawfirm = await Lawfirm.findOne({
+//           firmName: data.employer,
+//         });
+
+//         // robust date parsing
+//         const applicationDeadline = extractClosingDate(data.closing_text);
+
+//         // UPSERT — prevents duplicates + race condition
+//         const job = await Job.findOneAndUpdate(
+//           { jobId: data.vacancy_id },
+//           {
+//             title: data.title,
+//             url: data.url,
+//             location: data.location,
+//             companyName: data.employer,
+//             companyType: data?.companyType || null,
+//             postedBy: data.employer,
+//             description: data.training_course || null,
+//             level: data.training_course || null,
+//             salaryRange: data.wage || '0',
+//             startDate: data.start_date,
+//             applicationDeadline,
+//             jobId: data.vacancy_id,
+//             jobStatus: 'Open',
+//             status: 'inactive',
+//             createBy: userId,
+//             companyId: lawfirm?._id || null,
+//           },
+//           {
+//             upsert: true,
+//             new: true,
+//             setDefaultsOnInsert: true,
+//           },
+//         );
+
+//         // prevent duplicate push into lawfirm.jobs
+//         if (lawfirm && job) {
+//           const alreadyExists = lawfirm.jobs?.some(
+//             (id: any) => id.toString() === job._id.toString(),
+//           );
+
+//           if (!alreadyExists) {
+//             lawfirm?.jobs?.push(job._id);
+//             await lawfirm.save();
+//           }
+//         }
+
+//         return job;
+//       } catch (error) {
+//         console.error('Job creation failed:', error);
+//         return null;
+//       }
+//     }),
+//   );
+
+//   // remove null safely
+//   return results.filter(Boolean);
+// };
+
 const createJob = async (userId: string, job_title: string) => {
   const user = await User.findById(userId);
   if (!user) throw new AppError(404, 'User is not found');
@@ -140,14 +208,14 @@ const createJob = async (userId: string, job_title: string) => {
   const results = await Promise.all(
     dataResponse.map(async (data) => {
       try {
+        // lawfirm find
         const lawfirm = await Lawfirm.findOne({
-          firmName: data.employer,
+          firmName: { $regex: data.employer.trim(), $options: 'i' },
         });
 
-        // robust date parsing
         const applicationDeadline = extractClosingDate(data.closing_text);
 
-        // UPSERT — prevents duplicates + race condition
+        // job create / update
         const job = await Job.findOneAndUpdate(
           { jobId: data.vacancy_id },
           {
@@ -175,16 +243,14 @@ const createJob = async (userId: string, job_title: string) => {
           },
         );
 
-        // prevent duplicate push into lawfirm.jobs
+        // add job into lawfirm
         if (lawfirm && job) {
-          const alreadyExists = lawfirm.jobs?.some(
-            (id: any) => id.toString() === job._id.toString(),
+          await Lawfirm.updateOne(
+            { _id: lawfirm._id },
+            {
+              $addToSet: { jobs: job._id },
+            },
           );
-
-          if (!alreadyExists) {
-            lawfirm?.jobs?.push(job._id);
-            await lawfirm.save();
-          }
         }
 
         return job;
@@ -195,7 +261,6 @@ const createJob = async (userId: string, job_title: string) => {
     }),
   );
 
-  // remove null safely
   return results.filter(Boolean);
 };
 
@@ -947,13 +1012,13 @@ const getUniqueLocations = async () => {
   //     value: location,
   //   }));
   const locationList = locations
-  .filter(Boolean)
-  .sort((a, b) => a.localeCompare(b))
-  .map((location, index) => ({
-    id: index + 1,
-    name: location,
-    value: location,
-  }));
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b))
+    .map((location, index) => ({
+      id: index + 1,
+      name: location,
+      value: location,
+    }));
 
   return locationList;
 };
