@@ -43,6 +43,7 @@ import { reviewRoutes } from '../modules/review/review.routes';
 import { cvRoutes } from '../modules/cv/cv.routes';
 import { certificateRoutes } from '../modules/certificate/certificate.routes';
 import { videoProgressRoutes } from '../modules/videoProgress/videoProgress.routes';
+import { eventRegisterStudentRoutes } from '../modules/eventManagement/eventManagement.route';
 
 const router = Router();
 
@@ -202,6 +203,10 @@ const moduleRoutes = [
   {
     path: '/video-progress',
     route: videoProgressRoutes,
+  },
+ {
+    path: '/event-management',
+    route: eventRegisterStudentRoutes,
   },
 ];
 

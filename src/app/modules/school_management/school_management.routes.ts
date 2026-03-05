@@ -6,7 +6,7 @@ import { checkStudentSubscription } from '../../middlewares/checkSubscription';
 
 const router = express.Router()
 
-router.get('/overview', auth(userRole.school), checkStudentSubscription, schoolManagementController.schoolOverview)
+router.get('/overview', auth(userRole.school), checkStudentSubscription,schoolManagementController.schoolOverview)
 router.get('/', auth(userRole.school), checkStudentSubscription, schoolManagementController.getSchoolStudents)
 router.get('/:id', auth(userRole.school), schoolManagementController.getSingleStudent)
 router.delete('/:id', auth(userRole.school), schoolManagementController.deleteStudent)

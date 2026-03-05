@@ -21,7 +21,8 @@ import { schoolManagementService } from "./school_management.service";
 // })
 
 const getSchoolStudents = catchAsync(async (req, res) => {
-  const userId = req.user.id; // school's own id from token
+  const userId = req.user.id;
+  console.log('School ID from token:', userId, "mahabur");
 
   const filters = pick(req.query, [
     'searchTerm',
@@ -76,22 +77,9 @@ const deleteStudent = catchAsync(async(req , res) =>{
       });
 });
 
-// const schoolOverview = catchAsync(async (req, res) => {
-//     const schoolId = req.user.id;
-//     const overview = await schoolManagementService.schoolOverview(schoolId);
-
-//     sendResponse(res, {
-//         statusCode: 200,
-//         success: true,
-//         message: 'School overview retrieved successfully',
-//         data: overview,
-//       });
-// });
 const schoolOverview = catchAsync(async (req, res) => {
   const schoolId = req.user.id;
-
   const result = await schoolManagementService.schoolOverview(schoolId);
-
   sendResponse(res, {
     statusCode: 200,
     success: true,
