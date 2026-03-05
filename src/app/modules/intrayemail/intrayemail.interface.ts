@@ -11,4 +11,9 @@ export interface IIntrayemail {
   contextUnderstanding?: string;
   riskAssessment?: string;
   applicant?: Types.ObjectId;
+
+  wordCount?: number;
+  completionRate?: number;
+  overallGrade?: string;
+  typeSpeed?: number;
 }
