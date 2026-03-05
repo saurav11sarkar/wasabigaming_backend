@@ -56,6 +56,7 @@ const updateCareanalysis = async (
   payload.pretendCase = existingData.pretendCase || '';
   const aiResponse = await aiareanalysisSubmission(payload.yourResponse!);
   // console.log('aiResponse', aiResponse);
+  const typeSpreed = Math.floor(Math.random() * (60 - 20 + 1)) + 20;
   const result = await Careanalysis.findByIdAndUpdate(
     id,
     {
@@ -67,6 +68,7 @@ const updateCareanalysis = async (
       completionRate: aiResponse.completionRate,
       contentScore: aiResponse.contentScore,
       grade: aiResponse.grade,
+      typeSpreed: typeSpreed,
     },
     {
       new: true,

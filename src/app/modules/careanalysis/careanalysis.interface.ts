@@ -13,4 +13,5 @@ export interface ICareanalysis {
   caseLinking?: string;
   summaryQuality?: string[];
   applicant?: Types.ObjectId;
+  typeSpreed?: number;
 }

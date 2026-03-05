@@ -69,7 +69,7 @@ const registerUser = async (payload: Partial<IUser>) => {
 
     await sendMailer(
       user.email,
-      user.firstName + ' ' + user.lastName,
+      user.schoolName || user.firstName,
       createOtpTemplate(otp, user.email, 'Aspiring Legal Network'),
     );
     return user;
@@ -131,6 +131,18 @@ const loginUser = async (
   if (!payload.password) throw new AppError(400, 'Password is required');
   if (!user.registered)
     throw new AppError(401, 'Please verify your email first');
+
+  if (user.role === userRole.school) {
+    if (user.schoolStatus === 'pending') {
+      throw new AppError(
+        401,
+        'School is not approved yet. Please contact admin',
+      );
+    }
+    if (user.schoolStatus === 'rejected') {
+      throw new AppError(401, 'School is rejected. Please contact admin');
+    }
+  }
 
   const isPasswordMatched = await bcrypt.compare(
     payload.password,

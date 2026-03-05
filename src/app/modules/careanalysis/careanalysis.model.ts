@@ -53,6 +53,10 @@ const careanalysisSchema = new Schema<ICareanalysis>(
       type: String,
       trim: true,
     },
+    typeSpreed: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
