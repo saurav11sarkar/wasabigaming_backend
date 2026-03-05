@@ -35,7 +35,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1', router);
 app.get('/', (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Welcome to the server mahboobs' });
+  res.status(200).json({ message: 'Welcome to the server!!' });
 });
 
 app.use(notFoundError);
