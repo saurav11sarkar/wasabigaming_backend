@@ -180,10 +180,11 @@ const deleteInviteStudent = async (id: string, userId:string) => {
 };
 
 const updateInviteStudentStatus = async (payload: any) => {
-  const { email, status, schoolId } = payload;
+  const { email, status, schoolId, name } = payload;
+  // console.log(payload);
 
   const school = await User.findById(schoolId);
-  console.log('School found:', school);
+  // console.log('School found:', school);
   if (!school) {
     throw new AppError(404, 'School not found');
   }
@@ -199,18 +200,21 @@ const updateInviteStudentStatus = async (payload: any) => {
     if (!studentUser) {
       password = generateSixDigitCode();
       studentUser = await User.create({
-        name: inviteStudent.name,
-        email: inviteStudent.email,
+        name: name,
+        email: email,
         role: 'student',
         schoolId: school._id,
         password,
         registered:true,
       });
 
+        inviteStudent.name = name;
+        await inviteStudent.save();
+
         await sendMailer(
-          studentUser.email,
-          studentUser.firstName + ' ' + studentUser.lastName,
-          sendPasswordAndEmail(password, studentUser.email, 'Wasabigaming'),
+          email,
+          name,
+          sendPasswordAndEmail(password, email, 'Aspiring Legal Network.'),
       );
     } else {
       studentUser.schoolId = school._id;

@@ -344,34 +344,43 @@ export const createEventRegistrationTemplate = (
 export const sendPasswordAndEmail = (
   password: string,
   email?: string,
-  companyName: string = 'Wasabigaming',
+  companyName: string = 'Aspiring Legal Network.',
 ): string => `
-  <div style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 20px auto; background-color: #f9fafb; padding: 24px;">
-    <div style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.08);">
+  <div style="font-family: 'Georgia', 'Times New Roman', serif; max-width: 600px; margin: 20px auto; background-color: #f5f5f0; padding: 24px;">
+    <div style="background-color: #ffffff; border-radius: 4px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.12);">
       
       <!-- Header -->
-      <header style="background: linear-gradient(90deg, #4f46e5, #6366f1); padding: 28px; text-align: center; color: #ffffff;">
-        <h2 style="margin: 0; font-size: 22px; font-weight: 600;">Verify your Email</h2>
-        <p style="margin: 6px 0 0; font-size: 14px; opacity: 0.9;">Secure your ${companyName} account</p>
+      <header style="background-color: #FFE600; padding: 32px 28px; text-align: left; border-bottom: 3px solid #1a1a1a;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+          <span style="font-family: 'Georgia', serif; font-size: 11px; font-weight: 700; color: #1a1a1a; letter-spacing: 3px; text-transform: uppercase; background: #1a1a1a; color: #FFE600; padding: 4px 10px; border-radius: 20px;">✦ Credentials</span>
+        </div>
+        <h2 style="margin: 0; font-size: 26px; font-weight: 700; color: #1a1a1a; letter-spacing: -0.5px; line-height: 1.2;">Your Login Credentials</h2>
+        <p style="margin: 8px 0 0; font-size: 14px; color: #1a1a1a; opacity: 0.7; font-family: 'Helvetica Neue', sans-serif;">Secure your ${companyName} account</p>
       </header>
       
       <!-- Body -->
-      <main style="padding: 32px 24px; text-align: center; color: #374151;">
-        <p style="font-size: 16px; margin: 0 0 16px;">Hi ${email || 'there'},</p>
-        <p style="font-size: 15px; line-height: 1.6; margin: 0 0 24px;">
-          We received a request to verify your account. Please use the password and login your account:
+      <main style="padding: 36px 28px; text-align: left; color: #1a1a1a; background-color: #ffffff;">
+        <p style="font-size: 16px; margin: 0 0 12px; font-family: 'Helvetica Neue', sans-serif; color: #1a1a1a;">Hi <strong>${email || 'there'}</strong>,</p>
+        <p style="font-size: 15px; line-height: 1.7; margin: 0 0 28px; font-family: 'Helvetica Neue', sans-serif; color: #444444;">
+          We received a request to verify your account. Please use the password below to log in to your account:
         </p>
         
-        <!-- OTP Box -->
-        <div style="display: inline-block; background-color: #eef2ff; padding: 18px 36px; border-radius: 12px; font-size: 32px; font-weight: 700; color: #4f46e5; letter-spacing: 6px; margin: 20px 0;">
-          ${password}
+        <!-- Password Box -->
+        <div style="background-color: #FFE600; border: 2px solid #1a1a1a; border-radius: 4px; padding: 20px 28px; margin: 0 0 28px; display: inline-block;">
+          <p style="margin: 0 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #1a1a1a; font-family: 'Helvetica Neue', sans-serif;">Your Password</p>
+          <div style="font-size: 30px; font-weight: 700; color: #1a1a1a; letter-spacing: 6px; font-family: 'Courier New', monospace;">
+            ${password}
+          </div>
         </div>
-      
+
+        <p style="font-size: 13px; line-height: 1.6; margin: 0; font-family: 'Helvetica Neue', sans-serif; color: #888888;">
+          If you did not request this, please ignore this email or contact our support team immediately.
+        </p>
       </main>
       
       <!-- Footer -->
-      <footer style="background-color: #f3f4f6; text-align: center; padding: 16px; font-size: 12px; color: #9ca3af;">
-        &copy; ${new Date().getFullYear()} ${companyName}. All rights reserved.
+      <footer style="background-color: #1a1a1a; text-align: center; padding: 20px 16px; font-size: 12px; color: #888888; font-family: 'Helvetica Neue', sans-serif;">
+        <span style="color: #FFE600; font-weight: 700;">${companyName}</span> &nbsp;|&nbsp; &copy; ${new Date().getFullYear()} All rights reserved.
       </footer>
     </div>
   </div>
