@@ -44,7 +44,7 @@ const userSchema = new Schema<IUser>(
     schoolType: { type: String },
     schoolStatus: {
       type: String,
-      enum: ['approved', 'pending', 'rejected'],
+      enum: ['accepted', 'pending', 'rejected'],
     },
     aboutSchool: { type: String },
 
