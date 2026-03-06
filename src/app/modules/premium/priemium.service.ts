@@ -309,6 +309,7 @@ Secure payment powered by Stripe
       subscriptionId: premium._id.toString(),
       planName: premium.name,
       price: premium.price.toString(),
+      paymentType: 'subscription'
     },
   } as Stripe.Checkout.SessionCreateParams);
 

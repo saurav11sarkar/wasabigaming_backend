@@ -41,11 +41,16 @@ const webHookHandlers = async (req: Request, res: Response) => {
       if (!user) return res.json({ received: true });
 
       const paymentType = session.metadata?.paymentType;
-
+      // const paymentType = session?.mode;
+      // console.log("session metadat", session.metadata);
+      console.log("payment type",paymentType);
+      // console.log("all payment data", payment);
+      // console.log("session data", session?.mode)
       // ===============================
       // SUBSCRIPTION PAYMENT
       // ===============================
       if (paymentType === 'subscription') {
+        // console.log("mamun");
 
         const subscription = await Premium.findById(payment.subscription);
         if (!subscription) return res.json({ received: true });
