@@ -206,6 +206,9 @@ const updateInviteStudentStatus = async (payload: any) => {
         schoolId: school._id,
         password,
         registered:true,
+        isSubscription:true,
+        subscription:school.subscription,
+        subscriptionExpiry:school.subscriptionExpiry
       });
 
         inviteStudent.name = name;
