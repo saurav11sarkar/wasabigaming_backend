@@ -8,7 +8,6 @@ const createPresentationTask = catchAsync(async (req, res) => {
     req.user?.id,
     req.params.id!,
   );
-
   sendResponse(res, {
     statusCode: 201,
     success: true,
@@ -16,11 +15,11 @@ const createPresentationTask = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
 const getSinglePresentationTask = catchAsync(async (req, res) => {
   const result = await PresentationTaskService.getSinglePresentationTask(
     req.params.id!,
   );
-
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -30,12 +29,25 @@ const getSinglePresentationTask = catchAsync(async (req, res) => {
 });
 
 const updatePresentationTask = catchAsync(async (req, res) => {
-
   const file = req.file;
-  console.log("first")
-  if(!file){
-    throw new AppError(400, 'File is required');
+
+  if (!file) {
+    throw new AppError(400, 'Video file is required');
   }
+
+  if (!file.buffer || file.buffer.length === 0) {
+    throw new AppError(
+      400,
+      'Video file buffer is empty — check multer memoryStorage config',
+    );
+  }
+
+  console.log('File received in controller:', {
+    originalname: file.originalname,
+    mimetype: file.mimetype,
+    size: file.buffer.length,
+  });
+
   const result = await PresentationTaskService.updatePresentationTask(
     req.params.id!,
     req.body,

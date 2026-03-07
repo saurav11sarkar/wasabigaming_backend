@@ -8,28 +8,35 @@ import Aiassessment from '../aiassessment/aiassessment.model';
 import User from '../user/user.model';
 import { IPresentationTask } from './presentationtask.interface';
 import PresentationTask from './presentationtask.model';
-
 const createPresentationTask = async (
   userId: string,
   aiassigmentId: string,
 ) => {
   const user = await User.findById(userId);
-  if (!user) throw new AppError(404, 'user is not found');
-  const aiassessment = await Aiassessment.findById(aiassigmentId);
-  if (!aiassessment) throw new AppError(404, 'ai assessment not found');
+  if (!user) throw new AppError(404, 'User not found');
 
+  const aiassessment = await Aiassessment.findById(aiassigmentId);
+  if (!aiassessment) throw new AppError(404, 'AI assessment not found');
+
+  // aiResponse = { task, instructions, proTips }
   const aiResponse = await aiPresentationTaskQuestion();
-  console.log(aiResponse);
-  if (!aiResponse) throw new AppError(400, 'failed to get response from ai');
+  if (!aiResponse) throw new AppError(400, 'Failed to get response from AI');
+
+  console.log('Saving to DB:', {
+    task: aiResponse.task,
+    instructions: aiResponse.instructions,
+    proTips: aiResponse.proTips,
+  });
 
   const result = await PresentationTask.create({
     applicant: user._id,
     ventaraMobility: aiResponse.task,
-    keyObject: aiResponse.instructions,
-    proTip: aiResponse.proTips,
+    keyObject: aiResponse.instructions,   // string[]
+    proTip: aiResponse.proTips,           // string[]
     aiassigmentId: aiassessment._id,
   });
-  if (!result) throw new AppError(400, 'faild to create response');
+
+  if (!result) throw new AppError(400, 'Failed to create presentation task');
 
   if (!aiassessment.applicationUser?.includes(user._id)) {
     aiassessment.applicationUser?.push(user._id);
@@ -47,7 +54,7 @@ const getSinglePresentationTask = async (id: string) => {
   const result = await PresentationTask.findById(id)
     .populate('applicant', 'firstName lastName email profileImage')
     .populate('aiassigmentId');
-  if (!result) throw new AppError(404, 'interview not found');
+  if (!result) throw new AppError(404, 'Presentation task not found');
   return result;
 };
 
@@ -57,34 +64,45 @@ const updatePresentationTask = async (
   file?: Express.Multer.File,
 ) => {
   const existingData = await PresentationTask.findById(id);
-  if (!existingData) {
-    throw new AppError(404, 'Presentation task not found');
+  if (!existingData) throw new AppError(404, 'Presentation task not found');
+
+  // ✅ Validate file buffer
+  if (!file?.buffer || file.buffer.length === 0) {
+    throw new AppError(400, 'Valid video file is required');
   }
 
-  // file validation
-  if (!file?.buffer || !file?.originalname) {
-    throw new AppError(400, 'Video file is required for submission');
-  }
-
-  // required AI fields validation
+  // ✅ Validate DB fields are populated
   if (
     !existingData.ventaraMobility ||
     !existingData.keyObject?.length ||
     !existingData.proTip?.length
   ) {
-    throw new AppError(400, 'Presentation task data is incomplete');
+    console.log('Missing DB fields:', {
+      ventaraMobility: existingData.ventaraMobility,
+      keyObject: existingData.keyObject,
+      proTip: existingData.proTip,
+    });
+    throw new AppError(400, 'Presentation task data is incomplete. Please create the task first.');
   }
 
-  // call AI service
+  console.log('Sending to AI:', {
+    file: file.originalname,
+    mimetype: file.mimetype,
+    bufferSize: file.buffer.length,
+    task: existingData.ventaraMobility?.substring(0, 80),
+    keyObject: existingData.keyObject,
+    proTip: existingData.proTip,
+  });
+
   const aiResponse = await aiPresentationTaskSubmission(
     existingData.ventaraMobility,
-    existingData.keyObject.join('\n'),
-    existingData.proTip.join('\n'),
+    existingData.keyObject,   // ✅ string[] directly — no .join()
+    existingData.proTip,      // ✅ string[] directly — no .join()
     file.buffer,
     file.originalname,
+    file.mimetype,            // ✅ real mimetype from multer
   );
 
-  // random typing speed
   const typeSpeed = Math.floor(Math.random() * (60 - 20 + 1)) + 20;
 
   const updatedTask = await PresentationTask.findByIdAndUpdate(
@@ -99,14 +117,12 @@ const updatePresentationTask = async (
       yourResponse: payload?.yourResponse ?? '',
       typeSpeed,
     },
-    {
-      new: true,
-      runValidators: true,
-    },
+    { new: true, runValidators: true },
   );
 
   return updatedTask;
 };
+
 
 export const PresentationTaskService = {
   createPresentationTask,

@@ -115,28 +115,51 @@ export const aiPresentationTaskQuestion = async () => {
   }
 };
 
+// ✅ must use npm 'form-data', not native FormData
+
 export const aiPresentationTaskSubmission = async (
   task: string,
-  instructions: string,
-  proTips: string,
+  instructions: string[],
+  proTips: string[],
   videoBuffer: Buffer,
   filename: string,
+  mimetype: string,
 ) => {
+  if (!videoBuffer || videoBuffer.length === 0) {
+    throw new Error('Video buffer is empty');
+  }
+
   const formData = new FormData();
+
   formData.append('video', videoBuffer, {
     filename: filename,
-    contentType: 'video/mp4',
+    contentType: mimetype,
+    knownLength: videoBuffer.length,
   });
+
   formData.append('task', task);
-  formData.append('instructions', instructions);
-  formData.append('pro_tips', proTips);
+  formData.append('instructions', JSON.stringify(instructions));
+  formData.append('pro_tips', JSON.stringify(proTips));
+
+  console.log('=== AI SUBMISSION DEBUG ===');
+  console.log('Buffer size:', videoBuffer.length, 'bytes');
+  console.log('Filename:', filename);
+  console.log('Mimetype:', mimetype);
+  console.log('Task (first 80):', task?.substring(0, 80));
+  console.log('Instructions:', JSON.stringify(instructions));
+  console.log('ProTips:', JSON.stringify(proTips));
 
   try {
     const response = await axios.post(
       `${config.Ai_URL}/api/written_presentation_result/`,
       formData,
       {
-        headers: formData.getHeaders(),
+        headers: {
+          ...formData.getHeaders(),
+        },
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity,
+        timeout: 180000,
       },
     );
 
@@ -145,10 +168,14 @@ export const aiPresentationTaskSubmission = async (
         ? JSON.parse(response.data)
         : response.data;
 
+    console.log('AI Submission Response:', JSON.stringify(parsedData, null, 2));
+
     return parsedData;
   } catch (error: any) {
-    console.log('AI ERROR STATUS:', error.response?.status);
-    console.log('AI ERROR DATA:', error.response?.data);
+    console.log('=== AI SUBMISSION ERROR ===');
+    console.log('Status:', error.response?.status);
+    console.log('Data:', JSON.stringify(error.response?.data, null, 2));
+    console.log('Message:', error.message);
     throw error;
   }
 };
