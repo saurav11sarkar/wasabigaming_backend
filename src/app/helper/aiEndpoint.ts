@@ -93,7 +93,7 @@ export const aiwrittencaseStudySubmission = async (caseStudy: string) => {
 export const aiPresentationTaskQuestion = async () => {
   try {
     const response = await axios.post(
-      `${config.Ai_URL}/api/generate_written_presentation_ques/`,
+      `${config.Ai_URL}/api/generate_written_presentation_ques`,
       {},
       {
         headers: {
@@ -115,14 +115,21 @@ export const aiPresentationTaskQuestion = async () => {
   }
 };
 
-export const aiPresentationTaskSubmission = async (presentation: string, videoBuffer: Buffer, filename: string) => {
-  
+export const aiPresentationTaskSubmission = async (
+  task: string,
+  instructions: string,
+  proTips: string,
+  videoBuffer: Buffer,
+  filename: string,
+) => {
   const formData = new FormData();
   formData.append('video', videoBuffer, {
-      filename: filename,
-      contentType: 'video/mp4',
-    });
-  // formData.append('written_submission', presentation);
+    filename: filename,
+    contentType: 'video/mp4',
+  });
+  formData.append('task', task);
+  formData.append('instructions', instructions);
+  formData.append('pro_tips', proTips);
 
   try {
     const response = await axios.post(
@@ -343,7 +350,10 @@ export const cvBuilderSummary = async (
       typeof response.data === 'string'
         ? JSON.parse(response.data)
         : response.data;
-    return { text: data?.status && data?.text ? data.text : null, score: data?.score ? data.score : null };
+    return {
+      text: data?.status && data?.text ? data.text : null,
+      score: data?.score ? data.score : null,
+    };
   } catch (error: any) {
     console.error('SUMMARY AI ERROR:', error.response?.data);
     return { text: null, score: null }; // fail-safe

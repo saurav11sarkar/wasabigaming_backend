@@ -19,7 +19,7 @@ const createPresentationTask = async (
   if (!aiassessment) throw new AppError(404, 'ai assessment not found');
 
   const aiResponse = await aiPresentationTaskQuestion();
-  //   console.log(aiResponse);
+  console.log(aiResponse);
   if (!aiResponse) throw new AppError(400, 'failed to get response from ai');
 
   const result = await PresentationTask.create({
@@ -57,35 +57,55 @@ const updatePresentationTask = async (
   file?: Express.Multer.File,
 ) => {
   const existingData = await PresentationTask.findById(id);
-  if (!existingData) throw new AppError(404, 'Data not found');
+  if (!existingData) {
+    throw new AppError(404, 'Presentation task not found');
+  }
 
+  // file validation
+  if (!file?.buffer || !file?.originalname) {
+    throw new AppError(400, 'Video file is required for submission');
+  }
+
+  // required AI fields validation
+  if (
+    !existingData.ventaraMobility ||
+    !existingData.keyObject?.length ||
+    !existingData.proTip?.length
+  ) {
+    throw new AppError(400, 'Presentation task data is incomplete');
+  }
+
+  // call AI service
   const aiResponse = await aiPresentationTaskSubmission(
-    payload.yourResponse!,
-    file?.buffer!,
-    file?.originalname!,
+    existingData.ventaraMobility,
+    existingData.keyObject.join('\n'),
+    existingData.proTip.join('\n'),
+    file.buffer,
+    file.originalname,
   );
-  //   console.log(aiResponse);
-  const typeSpreed = Math.floor(Math.random() * (60 - 20 + 1)) + 20;
-  const result = await PresentationTask.findByIdAndUpdate(
+
+  // random typing speed
+  const typeSpeed = Math.floor(Math.random() * (60 - 20 + 1)) + 20;
+
+  const updatedTask = await PresentationTask.findByIdAndUpdate(
     id,
     {
-      feedback: aiResponse.feedback,
-      totalScore: aiResponse.contentScore || 0,
-      wordsCompleted: aiResponse.wordCount,
-      completionRate: aiResponse.completionRate,
-      writingSpeed: payload.writingSpeed || 50,
-      overallGrade: aiResponse.OverallGrade,
-      //   successTips: aiResponse.successTips,
-      yourResponse: payload.yourResponse,
-      typeSpreed: typeSpreed,
-      //   recommendations: aiResponse.recommendations,
+      feedback: aiResponse?.feedback ?? '',
+      totalScore: aiResponse?.contentScore ?? 0,
+      wordsCompleted: aiResponse?.wordCount ?? 0,
+      completionRate: aiResponse?.completionRate ?? 0,
+      writingSpeed: payload?.writingSpeed ?? 50,
+      overallGrade: aiResponse?.OverallGrade ?? '',
+      yourResponse: payload?.yourResponse ?? '',
+      typeSpeed,
     },
     {
       new: true,
       runValidators: true,
     },
   );
-  return result;
+
+  return updatedTask;
 };
 
 export const PresentationTaskService = {

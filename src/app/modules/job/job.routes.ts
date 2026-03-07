@@ -54,6 +54,8 @@ router.put(
   auth(userRole.student),
   jobController.applicationJobUser,
 );
+router.get('/my-application/:jobId', auth(userRole.student), jobController.getMySingleApplication);
+
 router.put(
   '/application-status/:jobId',
   auth(userRole.student),

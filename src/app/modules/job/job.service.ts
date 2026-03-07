@@ -743,6 +743,8 @@ const getNotMyAppliedJobs = async (
   };
 };
 
+
+
 // const getMyAppliedJobs = async (
 //   userId: string,
 //   params: any,
@@ -866,6 +868,19 @@ const getMyAppliedJobs = async (
     data,
     meta: { total, page, limit },
   };
+};
+
+
+const getMySingleApplication = async (userId: string, jobId: string) => {
+  const user = await User.findById(userId).populate({
+    path: 'applicationJob.job',
+    model: 'Job',
+    select: 'title companyName location level createdAt',
+  });
+  if (!user) throw new AppError(404, 'User not found');
+  const application = user.applicationJob?.find((app) => app.job.toString() === jobId);
+  if (!application) throw new AppError(404, 'Application not found');
+  return application;
 };
 
 const applicationJobUser = async (userId: string, jobId: string) => {
@@ -1141,6 +1156,7 @@ export const jobService = {
   updateApplicationStatus,
   getUniqueLocations,
   manualJob,
+  getMySingleApplication,
 
   // adminApplicationJobStatus,
   //getStudentAllJobs,

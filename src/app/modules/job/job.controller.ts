@@ -173,6 +173,18 @@ const getMyAppliedJobs = catchAsync(async (req, res) => {
   });
 });
 
+const getMySingleApplication = catchAsync(async (req, res) => {
+  const userId = req.user.id;
+  const { jobId } = req.params;
+  const result = await jobService.getMySingleApplication(userId, jobId!);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Job retrieved successfully',
+    data: result,
+  });
+});
+
 const applicationJobUser = catchAsync(async (req, res) => {
   const { jobId } = req.params;
   const userId = req.user.id;
@@ -374,6 +386,7 @@ export const jobController = {
   updateApplicationStatus,
   getUniqueLocations,
   manualJob,
+  getMySingleApplication,
 
   // getStudentAllJobs,
   // adminApplicationJobStatus,
