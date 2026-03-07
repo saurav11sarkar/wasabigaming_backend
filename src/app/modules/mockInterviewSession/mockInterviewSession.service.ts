@@ -220,10 +220,11 @@ const submitAnswer = async (payload: any, userId: string) => {
       commercial_awareness: aiResult.text.commercial_awareness,
       problem_solving: aiResult.text.problem_solving,
       professionalism_and_presence: aiResult.text.professionalism_and_presence,
+      feedback_timeline: aiResult.text.feedback_timeline || {},   // ← add this
       feedback: aiResult.text.feedback || {},
     },
   };
-
+  console.log(answerPayload)
   const index = session.answers.findIndex(
     a => a.questionIndex === questionIndex
   );

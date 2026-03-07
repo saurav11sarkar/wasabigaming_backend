@@ -1,12 +1,22 @@
 import { Types } from 'mongoose';
 
+export interface IFeedbackTimeline {
+  opening_hook?: {
+    secound?: number;
+    text?: string;
+  };
+  filler_words?: string;
+  stronger_answer?: string;
+}
+
 export interface IAIResult {
-   score?: number;
-   interview_crushed?: number,
-   communication_and_clarity?: number,
-   commercial_awareness?: number,
-   problem_solving?: number,
-   professionalism_and_presence?:number,
+  score?: number;
+  interview_crushed?: number;
+  communication_and_clarity?: number;
+  commercial_awareness?: number;
+  problem_solving?: number;
+  professionalism_and_presence?: number;
+  feedback_timeline?: IFeedbackTimeline;
   feedback?: {
     strength: string;
     areas_for_improvement: string;
